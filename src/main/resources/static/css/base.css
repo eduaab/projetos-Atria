@@ -1,0 +1,100 @@
+/* Tokens de design extraídos do protótipo (Figma). Use somente estas variáveis no restante do CSS. */
+:root {
+    /* Superfícies */
+    --cor-fundo: #f6f6f9;
+    --cor-superficie: #ffffff;
+    --cor-painel: #e6e6e6;
+    --cor-painel-suave: #efeff2;
+    --cor-borda: #dddddd;
+    --cor-borda-forte: #c7c7c7;
+
+    /* Marca */
+    --cor-lilas: #a192b3;
+    --cor-lilas-escuro: #817295;
+    --cor-lilas-claro: #ece8f1;
+    --cor-roxo-banner: #776c8a;
+    --cor-roxo-titulo: #4b3f5c;
+    --cor-terracota: #cd5730;
+    --cor-terracota-escuro: #a9441f;
+
+    /* Texto */
+    --cor-texto: #1e1b24;
+    --cor-texto-secundario: #555555;
+    --cor-texto-suave: #777777;
+    --cor-texto-invertido: #ffffff;
+
+    /* Estado */
+    --cor-sucesso: #418233;
+    --cor-sucesso-fundo: #557e46;
+    --cor-sucesso-claro: #e7f5e9;
+    --cor-erro: #9f2d2d;
+    --cor-erro-claro: #fff1f1;
+    --cor-aviso-claro: #fff6e5;
+
+    /* Prioridade dos alertas */
+    --cor-prioridade-alta: #cd5730;
+    --cor-prioridade-media: #c9871f;
+    --cor-prioridade-baixa: #7b7f9e;
+
+    /* Prazo restante (verde > 7 dias, amarelo 3–7, laranja até 2, vermelho vencido) */
+    --cor-prazo-verde: #418233;
+    --cor-prazo-amarelo: #b98b00;
+    --cor-prazo-laranja: #e0742a;
+    --cor-prazo-vermelho: #b3261e;
+
+    /* Gráficos (paleta validada para daltonismo) */
+    --cor-grafico-1: #cd5730;
+    --cor-grafico-2: #4b6fc4;
+    --cor-grafico-unica: #817295;
+
+    /* Forma */
+    --raio-pilula: 50px;
+    --raio-painel: 24px;
+    --raio-cartao: 14px;
+    --raio-pequeno: 8px;
+    --sombra-suave: 0 4px 14px rgba(30, 27, 36, 0.06);
+    --sombra-media: 0 8px 25px rgba(30, 27, 36, 0.14);
+    --sombra-ativo: 0 4px 10px rgba(60, 45, 80, 0.28);
+
+    /* Tipografia e espaçamento */
+    --fonte: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --espaco-1: 0.5rem;
+    --espaco-2: 1rem;
+    --espaco-3: 1.5rem;
+    --espaco-4: 2rem;
+    --largura-sidebar: 240px;
+    --largura-sidebar-recolhida: 76px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+    font-family: var(--fonte);
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--cor-texto);
+    background: var(--cor-fundo);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { color: var(--cor-roxo-titulo); line-height: 1.2; }
+h1 { font-size: 1.6rem; font-weight: 700; }
+h2 { font-size: 1.15rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 700; }
+
+a { color: var(--cor-lilas-escuro); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; opacity: 0.6; }
+img, svg { display: block; }
+
+:focus-visible { outline: 3px solid var(--cor-lilas-escuro); outline-offset: 2px; }
+
+.visualmente-oculto {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+[hidden] { display: none !important; }

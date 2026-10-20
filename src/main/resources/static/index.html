@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atria – Governança de dados</title>
+    <link rel="icon" href="/img/Logo.png">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+<div class="app">
+    <aside class="sidebar">
+        <div class="sidebar__marca"><img src="/img/Logo.png" alt="Atria" class="sidebar__logo"></div>
+        <nav aria-label="Navegação principal">
+            <ul class="menu" id="menu"></ul>
+        </nav>
+        <p class="sidebar__rodape" id="nome-loja"></p>
+    </aside>
+    <main class="principal" id="app" tabindex="-1"></main>
+</div>
+<div id="modais"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>
