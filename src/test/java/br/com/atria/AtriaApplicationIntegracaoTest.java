@@ -28,7 +28,9 @@ class AtriaApplicationIntegracaoTest {
             "/api/mapeamento/resumo", "/api/mapeamento/dados?plataforma=nuvemshop&tipo=CPF", "/api/titulares?busca=darci",
             "/api/titulares/2", "/api/titulares/2/exclusao/previa", "/api/solicitacoes?status=PENDENTE", "/api/alertas?prioridade=ALTA",
             "/api/alertas/1", "/api/riscos/indicadores", "/api/riscos/ocorrencias", "/api/relatorios/indicadores",
-            "/api/evidencias", "/api/auditoria"})
+            "/api/evidencias", "/api/auditoria", "/api/painel/meta", "/api/painel/resumo", "/api/painel/serie", "/api/painel/canais",
+            "/api/painel/atendimento", "/api/painel/posts", "/api/painel/clientes", "/api/painel/reputacao", "/api/painel/pendencias",
+            "/api/painel/modelos", "/api/painel/efeito-atria"})
     void endpointsDeConsultaRespondem200(String caminho) throws Exception {
         mockMvc.perform(get(caminho)).andExpect(status().isOk());
     }
