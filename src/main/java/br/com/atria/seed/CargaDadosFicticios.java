@@ -8,6 +8,8 @@ import br.com.atria.model.Evidencia;
 import br.com.atria.model.IdentidadePlataforma;
 import br.com.atria.model.Interacao;
 import br.com.atria.model.Lojista;
+import br.com.atria.model.DetalhePendencia;
+import com.fasterxml.jackson.databind.JsonNode;
 import br.com.atria.model.PendenciaCanal;
 import br.com.atria.model.Plataforma;
 import br.com.atria.model.RegistroAuditoria;
@@ -32,6 +34,7 @@ import br.com.atria.repository.EvidenciaRepository;
 import br.com.atria.repository.IdentidadePlataformaRepository;
 import br.com.atria.repository.InteracaoRepository;
 import br.com.atria.repository.LojistaRepository;
+import br.com.atria.repository.AnaliseRepository;
 import br.com.atria.repository.PendenciaCanalRepository;
 import br.com.atria.repository.PlataformaRepository;
 import br.com.atria.repository.RegistroAuditoriaRepository;
@@ -115,6 +118,7 @@ public class CargaDadosFicticios implements CommandLineRunner {
     private final SolicitacaoLgpdRepository solicitacaoRepository;
     private final EvidenciaRepository evidenciaRepository;
     private final PendenciaCanalRepository pendenciaRepository;
+    private final AnaliseRepository analise;
     private final AlertaRepository alertaRepository;
     private final RegistroAuditoriaRepository auditoriaRepository;
     private final AlertaService alertaService;
@@ -131,7 +135,7 @@ public class CargaDadosFicticios implements CommandLineRunner {
                                AcessoRepository acessoRepository, TitularRepository titularRepository,
                                IdentidadePlataformaRepository identidadeRepository, DadoIdentificadoRepository dadoRepository,
                                InteracaoRepository interacaoRepository, SolicitacaoLgpdRepository solicitacaoRepository,
-                               EvidenciaRepository evidenciaRepository, PendenciaCanalRepository pendenciaRepository,
+                               EvidenciaRepository evidenciaRepository, PendenciaCanalRepository pendenciaRepository, AnaliseRepository analise,
                                AlertaRepository alertaRepository, RegistroAuditoriaRepository auditoriaRepository,
                                AlertaService alertaService, FabricaAlertas fabricaAlertas, CalculadoraPrazo calculadoraPrazo,
                                GeradorProtocolo geradorProtocolo, GeradorHashComprovante geradorHash, Clock clock) {
@@ -147,6 +151,7 @@ public class CargaDadosFicticios implements CommandLineRunner {
         this.solicitacaoRepository = solicitacaoRepository;
         this.evidenciaRepository = evidenciaRepository;
         this.pendenciaRepository = pendenciaRepository;
+        this.analise = analise;
         this.alertaRepository = alertaRepository;
         this.auditoriaRepository = auditoriaRepository;
         this.alertaService = alertaService;
@@ -358,16 +363,7 @@ public class CargaDadosFicticios implements CommandLineRunner {
 
     private void criarPendenciasEHistoricoDeAlertas(Lojista lojista, List<Titular> titulares,
                                                     Map<String, Plataforma> plataformas, LocalDateTime agora) {
-        pendencia(lojista, titulares.get(9), plataformas.get("instagram"), TipoPendencia.MENSAGEM_SEM_RESPOSTA, agora.minusHours(6));
-        pendencia(lojista, titulares.get(19), plataformas.get("instagram"), TipoPendencia.MENSAGEM_SEM_RESPOSTA, agora.minusHours(2));
-        pendencia(lojista, titulares.get(6), plataformas.get("whatsapp"), TipoPendencia.RECLAMACAO_PENDENTE, agora.minusHours(30));
-        pendencia(lojista, titulares.get(24), plataformas.get("whatsapp"), TipoPendencia.MENSAGEM_SEM_RESPOSTA, agora.minusHours(5));
-        pendencia(lojista, titulares.get(2), plataformas.get("mercado-livre"), TipoPendencia.PEDIDO_NAO_ENVIADO, agora.minusDays(2));
-        pendencia(lojista, titulares.get(11), plataformas.get("mercado-livre"), TipoPendencia.PEDIDO_NAO_ENVIADO, agora.minusHours(50));
-        pendencia(lojista, titulares.get(27), plataformas.get("mercado-livre"), TipoPendencia.RECLAMACAO_PENDENTE, agora.minusHours(10));
-        pendencia(lojista, titulares.get(15), plataformas.get("nuvemshop"), TipoPendencia.PEDIDO_NAO_ENVIADO, agora.minusDays(3));
-        pendencia(lojista, titulares.get(5), plataformas.get("nuvemshop"), TipoPendencia.PEDIDO_NAO_ENVIADO, agora.minusHours(20));
-        pendencia(lojista, titulares.get(17), plataformas.get("shopee"), TipoPendencia.PEDIDO_NAO_ENVIADO, agora.minusDays(1).minusHours(3));
+        pendenciasDoPainel(lojista, titulares, plataformas, agora);
 
         historico(lojista, titulares.get(4), plataformas.get("whatsapp"), TipoPendencia.MENSAGEM_SEM_RESPOSTA, agora.minusDays(45), 3);
         historico(lojista, titulares.get(7), plataformas.get("mercado-livre"), TipoPendencia.RECLAMACAO_PENDENTE, agora.minusDays(38), 30);
@@ -376,6 +372,43 @@ public class CargaDadosFicticios implements CommandLineRunner {
         historico(lojista, titulares.get(21), plataformas.get("whatsapp"), TipoPendencia.RECLAMACAO_PENDENTE, agora.minusDays(16), 20);
         historico(lojista, titulares.get(29), plataformas.get("instagram"), TipoPendencia.MENSAGEM_SEM_RESPOSTA, agora.minusDays(9), 5);
         historico(lojista, titulares.get(3), plataformas.get("whatsapp"), TipoPendencia.MENSAGEM_SEM_RESPOSTA, agora.minusDays(4), 1);
+    }
+
+    /**
+     * As pendências abertas vêm do mesmo retrato analítico que alimenta o Painel, para a Central de alertas, a Home e o
+     * "O que precisa de mim" mostrarem as mesmas ocorrências. O tempo parado é contado a partir de agora.
+     */
+    private void pendenciasDoPainel(Lojista lojista, List<Titular> titulares, Map<String, Plataforma> plataformas, LocalDateTime agora) {
+        JsonNode retrato = analise.pendencias();
+        LocalDateTime fimDoRetrato = analise.dataReferencia().atTime(23, 59, 59);
+        int n = 0;
+        for (JsonNode m : retrato.get("mensagens")) {
+            DetalhePendencia d = DetalhePendencia.deMensagem(m.get("id").asLong(), m.get("intencao").asText(), m.get("texto").asText(),
+                    m.get("hora").asInt(), m.get("dia").asInt(), m.get("rec").asInt() == 1, m.get("vh").asDouble(), m.get("msgs").asInt(),
+                    m.get("midia").asInt() == 1, m.get("post").asInt() == 1);
+            pendenciaDoPainel(lojista, titulares.get(n++ * 7 % titulares.size()), plataformas.get(m.get("canal").asText()),
+                    TipoPendencia.MENSAGEM_SEM_RESPOSTA, agora.minusMinutes(Math.round(m.get("min").asDouble())), d);
+        }
+        for (JsonNode p : retrato.get("pedidos")) {
+            LocalDateTime prazo = agora.plusMinutes(java.time.Duration.between(fimDoRetrato,
+                    LocalDateTime.parse(p.get("prazo").asText().replace(' ', 'T'))).toMinutes());
+            pendenciaDoPainel(lojista, titulares.get(n++ * 7 % titulares.size()), plataformas.get(p.get("canal").asText()),
+                    TipoPendencia.PEDIDO_NAO_ENVIADO, agora.minusMinutes(Math.round(p.get("horas").asDouble() * 60)),
+                    DetalhePendencia.dePedido(p.get("id").asLong(), p.get("valor").asDouble(), prazo));
+        }
+        for (JsonNode r : retrato.get("reclamacoes")) {
+            pendenciaDoPainel(lojista, titulares.get(n++ * 7 % titulares.size()), plataformas.get(r.get("canal").asText()),
+                    TipoPendencia.RECLAMACAO_PENDENTE, agora.minusMinutes(Math.round(r.get("horas").asDouble() * 60)),
+                    DetalhePendencia.deReclamacao(r.get("id").asLong(), r.get("pedido").asLong(), r.get("tipo").asText()));
+        }
+    }
+
+    private void pendenciaDoPainel(Lojista lojista, Titular titular, Plataforma plataforma, TipoPendencia tipo,
+                                   LocalDateTime desde, DetalhePendencia detalhe) {
+        if (tipo == TipoPendencia.RECLAMACAO_PENDENTE) {
+            interagir(titular, plataforma, TipoInteracao.RECLAMACAO, desde, null);
+        }
+        pendenciaRepository.save(new PendenciaCanal(lojista.getId(), plataforma.getId(), titular.getId(), tipo, desde, detalhe));
     }
 
     private PendenciaCanal pendencia(Lojista lojista, Titular titular, Plataforma plataforma, TipoPendencia tipo, LocalDateTime desde) {

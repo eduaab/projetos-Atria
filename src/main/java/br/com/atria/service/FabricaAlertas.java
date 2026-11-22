@@ -2,6 +2,7 @@ package br.com.atria.service;
 
 import br.com.atria.model.Acesso;
 import br.com.atria.model.Alerta;
+import br.com.atria.model.DetalhePendencia;
 import br.com.atria.model.PendenciaCanal;
 import br.com.atria.model.Plataforma;
 import br.com.atria.model.SolicitacaoLgpd;
@@ -24,6 +25,12 @@ import java.time.LocalDateTime;
  */
 @Component
 public class FabricaAlertas {
+    private static final class Moeda {
+        static String formatar(double v) {
+            return java.text.NumberFormat.getCurrencyInstance(java.util.Locale.forLanguageTag("pt-BR")).format(v).replace('\u00a0', ' ');
+        }
+    }
+
     private final ClassificadorPrioridade classificador;
     private final CalculadoraPrazo calculadoraPrazo;
 
@@ -46,13 +53,42 @@ public class FabricaAlertas {
             default -> "Pedido não enviado " + local;
         };
         String descricao = switch (tipo) {
-            case CLIENTE_SEM_RESPOSTA -> "Cliente aguarda resposta desde " + desde + ".";
-            case RECLAMACAO_PENDENTE -> "Reclamação aberta em " + desde + " ainda sem tratamento.";
-            default -> "Pedido aguardando envio desde " + desde + ".";
+            case CLIENTE_SEM_RESPOSTA -> "Cliente aguarda resposta desde " + desde + "." + complementoMensagem(pendencia.getDetalhe());
+            case RECLAMACAO_PENDENTE -> "Reclamação" + complementoReclamacao(pendencia.getDetalhe()) + " aberta em " + desde + " ainda sem tratamento.";
+            default -> "Pedido" + complementoPedido(pendencia.getDetalhe()) + " aguardando envio desde " + desde + "." + prazoPedido(pendencia.getDetalhe());
         };
         return new Alerta(pendencia.getLojistaId(), plataforma.getId(), titular.getId(), tipo,
                 classificador.classificar(OcorrenciaRisco.deCanal(tipo, pendencia.getDesde(), agora)),
                 titulo, descricao, 1, OrigemAlerta.PENDENCIA, pendencia.getId(), pendencia.getDesde());
+    }
+
+    private static String complementoMensagem(DetalhePendencia d) {
+        if (d == null || d.intencao() == null) return "";
+        return " Assunto: " + switch (d.intencao()) {
+            case "compra" -> "quer comprar";
+            case "duvida_produto" -> "dúvida sobre produto";
+            case "pos_venda" -> "pós-venda";
+            case "reclamacao" -> "reclamação";
+            case "troca_devolucao" -> "troca ou devolução";
+            default -> d.intencao();
+        } + ".";
+    }
+
+    private static String complementoReclamacao(DetalhePendencia d) {
+        if (d == null || d.tipoReclamacao() == null) return "";
+        return " de " + switch (d.tipoReclamacao()) {
+            case "troca" -> "troca";
+            case "devolucao" -> "devolução";
+            default -> "produto diferente ou com defeito";
+        } + " (pedido #" + d.pedido() + ")";
+    }
+
+    private static String complementoPedido(DetalhePendencia d) {
+        return d == null || d.valorPedido() == null ? "" : " #" + d.referencia() + " (" + Moeda.formatar(d.valorPedido()) + ")";
+    }
+
+    private static String prazoPedido(DetalhePendencia d) {
+        return d == null || d.prazoEnvio() == null ? "" : " Prazo prometido: " + FormatoData.dataHora(d.prazoEnvio()) + ".";
     }
 
     public Alerta deAcesso(Acesso acesso, Usuario usuario, Plataforma plataforma, int clientesExpostos) {

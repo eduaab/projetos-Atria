@@ -12,9 +12,15 @@ public class PendenciaCanal implements Identificavel {
     private final Long titularId;
     private final TipoPendencia tipo;
     private final LocalDateTime desde;
+    private final DetalhePendencia detalhe;
     private boolean resolvida;
 
     public PendenciaCanal(Long lojistaId, Long plataformaId, Long titularId, TipoPendencia tipo, LocalDateTime desde) {
+        this(lojistaId, plataformaId, titularId, tipo, desde, null);
+    }
+
+    public PendenciaCanal(Long lojistaId, Long plataformaId, Long titularId, TipoPendencia tipo, LocalDateTime desde, DetalhePendencia detalhe) {
+        this.detalhe = detalhe;
         this.lojistaId = lojistaId;
         this.plataformaId = plataformaId;
         this.titularId = titularId;
@@ -33,5 +39,6 @@ public class PendenciaCanal implements Identificavel {
     public Long getTitularId() { return titularId; }
     public TipoPendencia getTipo() { return tipo; }
     public LocalDateTime getDesde() { return desde; }
+    public DetalhePendencia getDetalhe() { return detalhe; }
     public boolean isResolvida() { return resolvida; }
 }
