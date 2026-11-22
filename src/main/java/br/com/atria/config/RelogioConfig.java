@@ -11,6 +11,9 @@ public class RelogioConfig {
 
     @Bean
     public Clock clock(AtriaProperties propriedades) {
-        return Clock.system(ZoneId.of(propriedades.fusoHorario()));
+        String fuso = propriedades.fusoHorario() != null
+                ? propriedades.fusoHorario()
+                : "America/Sao_Paulo";
+        return Clock.system(ZoneId.of(fuso));
     }
 }
