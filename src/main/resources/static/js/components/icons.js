@@ -24,6 +24,7 @@ const CAMINHOS = {
     sacola: '<path d="M6 7h12l1 14H5L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/>',
     cadeado: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
     mais: '<path d="M12 5v14M5 12h14"/>',
+    grafico: '<path d="M4 20V4"/><path d="M4 20h16"/><path d="m7 15 4-5 3 3 5-7"/>',
 };
 
 const ICONE_DA_PLATAFORMA = {
