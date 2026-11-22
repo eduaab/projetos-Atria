@@ -8,9 +8,11 @@ import riscos from './pages/riscos.js';
 import conexoes from './pages/conexoes.js';
 import mapeamento from './pages/mapeamento.js';
 import relatorios from './pages/relatorios.js';
+import painel from './pages/painel.js';
 
 const MENU = [
     { rota: 'home', rotulo: 'Home', icone: 'casa' },
+    { rota: 'painel', rotulo: 'Painel', icone: 'grafico' },
     { rota: 'clientes', rotulo: 'Clientes', icone: 'usuarios' },
     { rota: 'alertas', rotulo: 'Alertas', icone: 'sino' },
     { rota: 'riscos', rotulo: 'Riscos', icone: 'escudo' },
@@ -22,6 +24,7 @@ render(document.getElementById('menu'), html`${MENU.map(item => html`
     <li><a class="menu__item" href="#/${item.rota}" data-menu="${item.rota}">${icone(item.icone)}<span>${item.rotulo}</span></a></li>`)}`);
 
 registrar('home', home, 'home');
+registrar('painel', painel, 'painel');
 registrar('clientes', clientes, 'clientes');
 registrar('clientes/:id', clientes, 'clientes');
 registrar('alertas', alertas, 'alertas');
