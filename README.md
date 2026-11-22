@@ -15,6 +15,7 @@ Plataforma de **governança de dados** para donos de pequenas e médias lojas de
 | **Exclusão LGPD** | Prévia do que será apagado e do que será preservado, confirmação, anonimização, remoção dos vínculos, protocolo `ATR-XXXXXXXX`, evidência com hash SHA-256 e comprovante em PDF. |
 | **Riscos e Prazos** | Solicitações em aberto com indicador de prazo (verde > 7 dias, amarelo 3–7, laranja até 2, vermelho vencido), métricas, status de exposição ANPD, riscos de marketplace e histórico de ocorrências. |
 | **Relatórios** | Indicadores consolidados de conformidade, solicitações atendidas, riscos resolvidos, histórico de ações (auditoria) e exportação em PDF: ESG (pilar G), ANPD e Diferencial Comercial. |
+| **Painel** | Como foi ontem e o período (7, 30, 60, 120 dias, 12 meses ou todo o histórico), o que precisa de atenção hoje, canais, atendimento, Instagram, clientes, reputação e o efeito da Atria na própria loja (antes e depois). Usa dados simulados de `src/main/resources/analise`; a pasta `analise/` tem os notebooks e os scripts que os geram. |
 
 A Atria **não altera nada nas plataformas de origem**: ela identifica, conecta as pontas e apaga apenas o que ela própria armazena.
 

@@ -1,0 +1,12 @@
+tabela,passo,linhas_antes,linhas_depois,afetadas,decisao
+pedidos,remover linhas 100% repetidas (exportação duplicada),32050,31421,629.0,linha idêntica não carrega informação nova
+pedidos,remover pedido_id repetido (reenvio de webhook),31421,31421,,mantém a primeira ocorrência; o reenvio repete o mesmo pedido
+pedidos,"converter 'R$ 1.234,56' (Shopee/Shein) para número",31421,31421,,39335 valores de texto convertidos
+pedidos,padronizar status de 5 plataformas em 5 estados da Atria,31421,31421,,20 nomes -> 5 estados
+pedidos,converter datas de UTC para horário local e unificar formato,31421,31421,,marketplaces exportam UTC; Nuvemshop em horário local
+pedidos,desconto ausente -> 0,31421,31421,,2538 nulos; ausência de campo significa sem desconto
+clientes,"normalizar e-mail (minúsculas), cidade (Title) e telefone (só dígitos)",19506,19506,,base para unificar identidade
+clientes,unificar mesma pessoa cadastrada em dois canais (omnichannel),19506,17045,2461.0,IDs +500000 eram a mesma pessoa; mantém o ID original
+pedidos,remover pedidos com cliente inexistente,31421,31391,30.0,cliente_id sem cadastro: não dá para analisar o comportamento do cliente
+conversas,converter '12min' e '720s' para minutos,47309,47309,,unidade mista
+conversas,tempos negativos ou acima de 10 dias viram nulo,47309,47309,,25 valores impossíveis (relógio errado ou fila travada)

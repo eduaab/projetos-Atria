@@ -1,0 +1,9 @@
+{
+ "pedido_id único": true,
+ "valores negativos": 0,
+ "envio antes do pedido": 0,
+ "entrega antes do envio": 0,
+ "cliente órfão": 0,
+ "pedidos perdidos por cliente órfão (injetados)": 30,
+ "receita limpa vs verdade (diferença R$)": -4752.66
+}
